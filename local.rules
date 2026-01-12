@@ -1,0 +1,52 @@
+# SSH Brute Force Detection
+alert tcp any any -> any 22 (
+    msg:"Possible SSH Brute Force Attempt";
+    flags:S;
+    threshold:type both, track by_src, count 5, seconds 60;
+    sid:1000001;
+    rev:1;
+)
+
+# Generic TCP Port Scan Detection
+alert tcp any any -> any any (
+    msg:"TCP Port Scan Detected";
+    flags:S;
+    threshold:type both, track by_src, count 10, seconds 60;
+    sid:1000002;
+    rev:1;
+)
+
+# Aggressive TCP (Nmap) Scan Detection
+alert tcp any any -> any any (
+    msg:"Aggressive TCP Scan Detected";
+    flags:S;
+    threshold:type both, track by_src, count 30, seconds 10;
+    sid:1000003;
+    rev:1;
+)
+
+# ICMP Ping Flood Detection (Simple DoS)
+alert icmp any any -> any any (
+    msg:"ICMP Ping Flood Detected";
+    itype:8;
+    threshold:type both, track by_src, count 20, seconds 5;
+    sid:1000004;
+    rev:1;
+)
+
+# Aggressive ICMP Flood Detection
+alert icmp any any -> any any (
+    msg:"Aggressive ICMP Flood Detected";
+    itype:8;
+    threshold:type both, track by_src, count 50, seconds 3;
+    sid:1000005;
+    rev:1;
+)
+
+# Suspicious Large ICMP Packet Detection (Ping Abuse)
+alert icmp any any -> any any (
+    msg:"Suspicious Large ICMP Packet Detected";
+    dsize:>1000;
+    sid:1000006;
+    rev:1;
+)
